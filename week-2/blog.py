@@ -3,6 +3,7 @@ from flask import url_for
 from flask import request
 from flask import render_template
 from flask import redirect
+from flask import jsonify
 
 
 app = Flask(__name__)
@@ -17,6 +18,19 @@ def index():
 @app.route('/about', methods=['GET'])
 def about():
     return 'This is an about page'
+
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    data = {
+        "message": "Welcome to my Blog",
+        "status": "success",
+        "items": [
+            {"id": 1, "name": "Tunga"},
+            {"id": 2, "name": "Assignment"}
+        ]
+    }
+    return jsonify(data)
+
 
 @app.route('/create-post', methods=['GET', 'POST'])
 def post():
@@ -58,12 +72,15 @@ def update_post(post_id):
         <a href="/">Back to Home</a>
     '''
 
+
 @app.route('/delete-post/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
     if post_id in posts:
         del posts[post_id]
         return redirect(url_for('index'))
     return "Post not found!", 404
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
